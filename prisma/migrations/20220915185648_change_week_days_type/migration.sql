@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Ad" ALTER COLUMN "weekDays" SET DATA TYPE TEXT;
