@@ -8,7 +8,6 @@ app.use(express.json())
 app.use(cors())
 
 const prisma = new PrismaClient({
-    // log: ['query']
 });
 
 app.get('/games', async (req, res) => {
