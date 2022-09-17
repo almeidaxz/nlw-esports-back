@@ -8,7 +8,7 @@ app.use(express.json())
 app.use(cors())
 
 const prisma = new PrismaClient({
-    log: ['query']
+    // log: ['query']
 });
 
 app.get('/games', async (req, res) => {
@@ -28,20 +28,27 @@ app.post('/games/:id/ads', async (req, res) => {
     const gameId = req.params.id;
     const body = req.body;
 
-    const ad = await prisma.ad.create({
-        data: {
-            gameId,
-            name: body.name,
-            yearsPlaying: body.yearsPlaying,
-            discord: body.discord,
-            weekDays: body.weekDays,
-            hourStart: formatHoursToMinutes(body.hourStart),
-            hourEnd: formatHoursToMinutes(body.hourEnd),
-            useVoiceChat: body.useVoiceChat
-        }
-    })
+    console.log(body)
+    console.log(gameId)
 
-    return res.status(201).json(ad);
+    try {
+        const ad = await prisma.ad.create({
+            data: {
+                gameId,
+                name: body.name,
+                yearsPlaying: body.yearsPlaying,
+                discord: body.discord,
+                weekDays: body.weekDays,
+                hourStart: formatHoursToMinutes(body.hourStart),
+                hourEnd: formatHoursToMinutes(body.hourEnd),
+                useVoiceChat: body.useVoiceChat
+            }
+        })
+        return res.status(201).json(ad);
+    } catch (error) {
+        console.log(error)
+    }
+
 });
 
 app.get('/games/:id/ads', async (req, res) => {
@@ -75,16 +82,21 @@ app.get('/games/:id/ads', async (req, res) => {
 app.get('/ads/:id/discord', async (req, res) => {
     const adId = req.params.id;
 
-    const discord = await prisma.ad.findUniqueOrThrow({
-        select: {
-            discord: true
-        },
-        where: {
-            id: adId
-        }
-    })
 
-    return res.json(discord);
+    try {
+        const discord = await prisma.ad.findUniqueOrThrow({
+            select: {
+                discord: true
+            },
+            where: {
+                id: adId
+            }
+        })
+
+        return res.json(discord);
+    } catch (error) {
+        console.log(error)
+    }
 });
 
 app.listen(3333);
